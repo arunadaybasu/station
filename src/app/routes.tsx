@@ -10,6 +10,7 @@ import { ReactComponent as StakeIcon } from "styles/images/menu/Stake.svg"
 import { ReactComponent as GovernanceIcon } from "styles/images/menu/Governance.svg"
 import { ReactComponent as ContractIcon } from "styles/images/menu/Contract.svg"
 import BurnIcon from "@mui/icons-material/LocalFireDepartment"
+import StatusIcon from "@mui/icons-material/Storage"
 
 /* menu */
 import Dashboard from "pages/dashboard/Dashboard"
@@ -19,6 +20,7 @@ import History from "pages/history/History"
 import Stake from "pages/stake/Stake"
 import Governance from "pages/gov/Governance"
 import Contract from "pages/contract/Contract"
+import Status from "pages/services/Status"
 
 /* details */
 import ValidatorDetails from "pages/stake/ValidatorDetails"
@@ -113,6 +115,12 @@ export const useNav = () => {
       element: <Contract />,
       title: t("Contract"),
       icon: <ContractIcon {...ICON_SIZE} />,
+    },
+    {
+      path: "/status",
+      element: <Status />,
+      title: t("Status"),
+      icon: <StatusIcon {...ICON_SIZE} />,
     },
   ]
 
