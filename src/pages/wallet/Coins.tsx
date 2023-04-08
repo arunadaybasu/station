@@ -57,15 +57,9 @@ const Coins = () => {
             {list.map(({ denom, ...item }) => (
               <div key={denom}>
                 {denom === "uluna" && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "116px",
-                      left: "110px",
-                    }}
-                  >
+                  <div className={styles.dollarBubble}>
                     <Tag color={"success"}>
-                      {"$ "}
+                      LUNC: {"$ "}
                       <Read amount={String(price * item.value)} auto />
                     </Tag>
                   </div>
