@@ -87,8 +87,6 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
   })
   const [proposalData, paginationData] = data || []
 
-  console.log(proposalData)
-
   useEffect(() => {
     if (
       !(
@@ -161,8 +159,12 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
     )
   }
 
-  /* constant added to filter spam and phishing proposals */
-  const spamRegex = /https\:\/\/classic\-agora\.terra\.money/gi //proposal needs to contain official Agora url otherwise proposal not displayed in list page
+  /* constants added to filter spam and phishing proposals */
+  const urlRegex =
+    /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi //checks for url
+  const httpsRegex =
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi //checks for https
+  const agoraRegex = /https:\/\/classic-agora\.terra\.money/gi //checks for official Agora url
 
   const render = () => {
     if (!(proposalData && whitelistData)) return null
@@ -187,7 +189,9 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
       <>
         <section className={styles.list}>
           {proposals
-            .filter((proposal) => spamRegex.test(proposal.content.description))
+            .filter((proposal) => urlRegex.test(proposal.content.description))
+            .filter((proposal) => httpsRegex.test(proposal.content.description))
+            .filter((proposal) => agoraRegex.test(proposal.content.description))
             .map((item) => (
               <Card
                 to={`/proposal/${item.id}`}
