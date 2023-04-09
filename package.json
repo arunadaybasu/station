@@ -1,8 +1,7 @@
 {
   "name": "rebel-station",
   "description": "A web application to interact with Terra Core.",
-  "hompage": "https://terrarebels.net",
-  "author": "Terra Rebels <engineering@terrarebels.net> (https://terrarebels.net)",
+  "author": "Terra Rebels <contact@terrarebels.net> (https://terrarebels.net)",
   "repository": "github:terra-rebels/station",
   "license": "MIT",
   "scripts": {
@@ -22,7 +21,7 @@
     "@terra-rebels/log-finder-ruleset": "^1.0.0",
     "@terra-rebels/terra.js": "^1.0.0",
     "@terra-rebels/terra.proto": "^0.9.0",
-    "@terra-rebels/wallet-provider": "^1.0.2",
+    "@terra-rebels/wallet-provider": "^1.0.3",
     "@terra-rebels/kitchen-utils": "^1.0.0",
     "@tippyjs/react": "^4.2.6",
     "axios": "^0.27.2",

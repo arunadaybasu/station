@@ -2,7 +2,7 @@
 export const LAZY_LIMIT = 999
 
 /* connection */
-export const BRIDGE = "https://walletconnect.terra.dev"
+export const BRIDGE = "https://walletconnect.terrarebels.net"
 
 /* api */
 export const ASSETS = "https://assets.terrarebels.net"
@@ -14,6 +14,7 @@ export const FINDER = "https://finder.terrarebels.net"
 export const EXTENSION =
   "https://chrome.google.com/webstore/detail/akckefnapafjbpphkefbpkpcamkoaoai"
 export const TUTORIAL = "https://www.terrarebels.net/guides"
+export const FORUMS = "https://forums.terrarebels.net"
 
 /* website: stake */
 export const TERRA_VALIDATORS =
@@ -26,7 +27,7 @@ export const LEDGER_TRANSPORT_TIMEOUT = 120000
 
 /* tx */
 export const DEFAULT_GAS_ADJUSTMENT = 2
-export const CLASSIC_DEFAULT_GAS_ADJUSTMENT = 3
+export const CLASSIC_DEFAULT_GAS_ADJUSTMENT = 5
 
 /* swap */
 export const TERRASWAP_COMMISSION_RATE = 0.003

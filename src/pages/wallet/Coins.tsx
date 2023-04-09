@@ -10,9 +10,12 @@ import { useBankBalance } from "data/queries/bank"
 import { useIsWalletEmpty, useTerraNativeLength } from "data/queries/bank"
 import { useActiveDenoms } from "data/queries/oracle"
 import { useMemoizedCalcValue } from "data/queries/oracle"
+import { useMemoizedPrices } from "data/queries/oracle"
 import { InternalLink } from "components/general"
 import { Card, Flex, Grid } from "components/layout"
 import { FormError } from "components/form"
+import { Read } from "components/token"
+import { Tag } from "components/display"
 import Asset from "./Asset"
 import SelectMinimumValue from "./SelectMinimumValue"
 import styles from "./Coins.module.scss"
@@ -22,11 +25,17 @@ const Coins = () => {
   const isClassic = useIsClassic()
   const length = useTerraNativeLength()
   const isWalletEmpty = useIsWalletEmpty()
-  const { data: denoms, ...state } = useActiveDenoms()
+  const { data: denoms, ...denomState } = useActiveDenoms()
   const coins = useCoins(denoms)
+  const currency = useCurrency()
+  const denom = currency === "uluna" ? "uusd" : currency
+  const { data: prices } = useMemoizedPrices(denom)
 
   const render = () => {
     if (!coins) return
+
+    if (!prices) return
+    const { uluna: price } = prices
 
     const [all, filtered] = coins
     const list = isClassic ? filtered : all
@@ -46,11 +55,17 @@ const Coins = () => {
 
           <section>
             {list.map(({ denom, ...item }) => (
-              <Asset
-                {...readNativeDenom(denom, isClassic)}
-                {...item}
-                key={denom}
-              />
+              <div key={denom}>
+                {denom === "uluna" && (
+                  <div className={styles.dollarBubble}>
+                    <Tag color={"success"}>
+                      LUNC: {"$ "}
+                      <Read amount={String(price * item.value)} auto />
+                    </Tag>
+                  </div>
+                )}
+                <Asset {...readNativeDenom(denom, isClassic)} {...item} />
+              </div>
             ))}
           </section>
         </Grid>
@@ -69,7 +84,7 @@ const Coins = () => {
   )
 
   return (
-    <Card {...state} title={t("Coins")} extra={extra}>
+    <Card {...denomState} title={t("Coins")} extra={extra}>
       <Grid gap={32}>{render()}</Grid>
     </Card>
   )

@@ -5,12 +5,14 @@ import { useCurrency } from "data/settings/Currency"
 import { combineState } from "data/query"
 import { calcRewardsValues, useRewards } from "data/queries/distribution"
 import { useMemoizedCalcValue } from "data/queries/oracle"
+import { useMemoizedPrices } from "data/queries/oracle"
 import { calcDelegationsTotal } from "data/queries/staking"
 import { calcUnbondingsTotal } from "data/queries/staking"
 import { useDelegations, useUnbondings } from "data/queries/staking"
 import { LinkButton } from "components/general"
 import { Card, Grid } from "components/layout"
 import { Read } from "components/token"
+import { Tag } from "components/display"
 import DelegationsPromote from "app/containers/DelegationsPromote"
 import styles from "./Rewards.module.scss"
 
@@ -19,10 +21,12 @@ const Rewards = () => {
 
   const currency = useCurrency()
   const calcValue = useMemoizedCalcValue()
+  const denom = currency === "uluna" ? "uusd" : currency
 
   const { data: rewards, ...rewardsState } = useRewards()
   const { data: delegations, ...delegationsState } = useDelegations()
   const { data: unbondings, ...unbondingsState } = useUnbondings()
+  const { data: prices } = useMemoizedPrices(denom)
   const state = combineState(rewardsState, delegationsState, unbondingsState)
 
   const render = () => {
@@ -49,6 +53,15 @@ const Rewards = () => {
             </span>
           </div>
 
+          {prices && (
+            <div style={{ position: "relative", top: "-20px" }}>
+              <Tag color={"success"}>
+                {"$ "}
+                <Read amount={String(prices.uluna * Number(amount))} auto />
+              </Tag>
+            </div>
+          )}
+
           {has(delegationTotal) && (
             <Grid gap={4}>
               <h1>{t("Delegations")}</h1>
@@ -58,6 +71,18 @@ const Rewards = () => {
                 denom="uluna"
               />
             </Grid>
+          )}
+
+          {prices && (
+            <div style={{ position: "relative", top: "-20px" }}>
+              <Tag color={"success"}>
+                {"$ "}
+                <Read
+                  amount={String(prices.uluna * Number(delegationTotal))}
+                  auto
+                />
+              </Tag>
+            </div>
           )}
 
           {has(unbondingsTotal) && (

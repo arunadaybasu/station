@@ -80,4 +80,12 @@ const ProposalDescription = ({ proposal }: { proposal: Proposal }) => {
   )
 }
 
+const isWhitelisted = (url?: string) => {
+  if (!url) return false
+  return (
+    new URL(url).hostname.endsWith("terrarebels.net") ||
+    new URL(url).hostname.endsWith("terra.money")
+  )
+}
+
 export default ProposalDescription

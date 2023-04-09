@@ -87,6 +87,8 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
   })
   const [proposalData, paginationData] = data || []
 
+  console.log(proposalData)
+
   useEffect(() => {
     if (
       !(
@@ -159,6 +161,9 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
     )
   }
 
+  /* constant added to filter spam and phishing proposals */
+  const spamRegex = /https\:\/\/classic\-agora\.terra\.money/gi //proposal needs to contain official Agora url otherwise proposal not displayed in list page
+
   const render = () => {
     if (!(proposalData && whitelistData)) return null
 
@@ -181,15 +186,17 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
     ) : (
       <>
         <section className={styles.list}>
-          {proposals.map((item) => (
-            <Card
-              to={`/proposal/${item.id}`}
-              className={styles.link}
-              key={item.id}
-            >
-              <ProposalItem proposal={item} showVotes={!showAll} />
-            </Card>
-          ))}
+          {proposals
+            .filter((proposal) => spamRegex.test(proposal.content.description))
+            .map((item) => (
+              <Card
+                to={`/proposal/${item.id}`}
+                className={styles.link}
+                key={item.id}
+              >
+                <ProposalItem proposal={item} showVotes={!showAll} />
+              </Card>
+            ))}
         </section>
 
         {renderPagination()}

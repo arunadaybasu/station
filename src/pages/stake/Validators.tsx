@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import VerifiedIcon from "@mui/icons-material/Verified"
@@ -18,7 +18,7 @@ import { Toggle } from "components/form"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import ProfileIcon from "./components/ProfileIcon"
-import Uptime from "./components/Uptime"
+// import Uptime from "./components/Uptime"
 import { ValidatorJailed } from "./components/ValidatorTag"
 import styles from "./Validators.module.scss"
 
@@ -39,13 +39,29 @@ const Validators = () => {
     TerraValidatorsState
   )
 
+  const [byDelegated, setByDelegated] = useState(false)
+
+  const isDelegated = useCallback(
+    (operator_address: string) => {
+      return delegations?.find(
+        ({ validator_address }) => validator_address === operator_address
+      )
+    },
+    [delegations]
+  )
+
   const activeValidators = useMemo(() => {
     if (!(validators && TerraValidators)) return null
 
     const calcRate = getCalcVotingPowerRate(TerraValidators)
 
     return validators
-      .filter(({ status }) => !getIsUnbonded(status))
+      .filter(({ status, operator_address }) => {
+        return (
+          !getIsUnbonded(status) &&
+          (byDelegated === false ? true : isDelegated(operator_address))
+        )
+      })
       .map((validator) => {
         const { operator_address } = validator
 
@@ -66,7 +82,7 @@ const Validators = () => {
         }
       })
       .sort(({ rank: a }, { rank: b }) => a - b)
-  }, [TerraValidators, validators])
+  }, [TerraValidators, byDelegated, isDelegated, validators])
 
   const renderCount = () => {
     if (!validators) return null
@@ -109,6 +125,17 @@ const Validators = () => {
             >
               <Toggle checked={byRank} onChange={() => setByRank(!byRank)}>
                 {t("Weighted score")}
+              </Toggle>
+            </TooltipIcon>
+            <TooltipIcon
+              className={styles.tooltip_spacer}
+              content={<span>Show delegated validators only</span>}
+            >
+              <Toggle
+                checked={byDelegated}
+                onChange={() => setByDelegated(!byDelegated)}
+              >
+                {t("Delegated only")}
               </Toggle>
             </TooltipIcon>
           </section>
@@ -210,23 +237,23 @@ const Validators = () => {
                 readPercent(rate.toString(), { fixed: 2 }),
               align: "right",
             },
-            {
-              title: t("Uptime"),
-              tooltip: t("90 days uptime EMA"),
-              dataIndex: "time_weighted_uptime",
-              defaultSortOrder: "desc",
-              key: "uptime",
-              sorter: (
-                { time_weighted_uptime: a = 0 },
-                { time_weighted_uptime: b = 0 }
-              ) => a - b,
-              render: (value) => !!value && <Uptime>{value}</Uptime>,
-              align: "right",
-              hidden: !isClassic,
-            },
+            // {
+            //   title: t("Uptime"),
+            //   tooltip: t("90 days uptime EMA"),
+            //   dataIndex: "time_weighted_uptime",
+            //   defaultSortOrder: "desc",
+            //   key: "uptime",
+            //   sorter: (
+            //     { time_weighted_uptime: a = 0 },
+            //     { time_weighted_uptime: b = 0 }
+            //   ) => a - b,
+            //   render: (value) => !!value && <Uptime>{value}</Uptime>,
+            //   align: "right",
+            //   hidden: !isClassic,
+            // },
             {
               title: t("Rewards"),
-              tooltip: t("Estimated monthly rewards with 100 Luna staked"),
+              tooltip: t("Estimated monthly rewards with 100 Lunc staked"),
               dataIndex: "rewards_30d",
               defaultSortOrder: "desc",
               key: "rewards",
